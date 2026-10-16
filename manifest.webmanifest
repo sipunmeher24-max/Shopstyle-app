@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "ShopStyle Men's Virtual Trial Room",
+  "short_name": "ShopStyle",
+  "description": "Men's clothing catalogue, outfit builder and AI try-on integration starter.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f8f5",
+  "theme_color": "#123b32",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

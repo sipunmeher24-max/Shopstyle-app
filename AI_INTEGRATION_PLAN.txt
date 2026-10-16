@@ -1,0 +1,12 @@
+AI TRY-ON INTEGRATION CHECKLIST
+
+The app's AI button is intentionally not connected yet. Before wiring in a provider:
+- Confirm the provider accepts a customer/model photo AND a shop garment photo.
+- Test whether it supports real garment transfer rather than only generating fashion imagery.
+- Check current free-tier limits, commercial-use permission, watermarking, and retention/training terms.
+- Obtain explicit customer permission before sending their photo to an external service.
+- Put provider credentials on a server/backend, never in the web app's HTML/JavaScript.
+- Add upload size limits, error handling, deletion/retention controls, and clear user consent.
+- Test that product photos and the customer's identity/body are preserved as well as the provider allows.
+
+No provider is selected in this package because availability, free limits, and terms change. A ChatGPT plugin for making fashion content is not the same as an embeddable API for this app.

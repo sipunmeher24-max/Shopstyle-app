@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b32">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>ShopStyle — Men's Virtual Trial Room</title>
+<style>
+:root{--green:#123b32;--mint:#e8f3ee;--gold:#d5a64b;--ink:#17211e;--muted:#65736d;--paper:#f7f8f5;--line:#e1e7e2}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--paper);color:var(--ink)}
+header{background:var(--green);color:white;padding:20px 17px 22px;border-radius:0 0 22px 22px}
+.brand{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#d7e8df;font-weight:700}
+h1{font-size:25px;line-height:1.15;margin:8px 0}header p{margin:7px 0 0;color:#e0ebe5;font-size:13px}
+main{max-width:780px;margin:auto;padding:15px}
+.tabs{display:flex;gap:7px;overflow:auto;margin:0 0 16px}
+.tab{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 13px;font-weight:700;white-space:nowrap;color:var(--muted)}
+.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.card{background:white;border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px #122c2010}
+h2{font-size:18px;margin:0 0 5px}.sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+label{font-size:13px;font-weight:700;display:block;margin:10px 0 6px}
+input,select,textarea{width:100%;border:1px solid #d6ded8;border-radius:10px;padding:11px;background:#fff;font:inherit;color:var(--ink)}
+button{border:0;border-radius:11px;padding:12px 14px;font-weight:750;font-size:14px;cursor:pointer}
+.primary{background:var(--green);color:#fff}.secondary{background:var(--mint);color:var(--green)}.danger{background:#fff0ef;color:#a83229}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.photoBox{border:2px dashed #c7d7ce;border-radius:14px;padding:14px;text-align:center;background:#fbfdfb}
+.photoBox img{max-width:100%;max-height:330px;border-radius:10px;display:block;margin:10px auto 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.product{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white}
+.product img{width:100%;height:140px;object-fit:cover;background:#edf1ed}
+.product .pbody{padding:10px}.product h3{font-size:14px;margin:0 0 4px}.price{font-weight:800;color:var(--green)}.meta{font-size:12px;color:var(--muted);margin:4px 0 8px}
+.product button{width:100%;padding:9px;font-size:12px}
+.empty{text-align:center;padding:22px 8px;color:var(--muted);font-size:13px}
+.notice{background:#fff7e5;border:1px solid #f0dfb3;padding:12px;border-radius:12px;font-size:12px;line-height:1.5;color:#6e5418}
+.hidden{display:none!important}.foot{font-size:11px;color:var(--muted);text-align:center;padding:8px 12px 25px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.product img{height:170px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Men's fashion • Personal shop tool</div>
+  <h1>ShopStyle<br>Virtual Trial Room</h1>
+  <p>Keep your shop's clothing catalogue and prepare customer outfit previews.</p>
+</header>
+<main>
+  <nav class="tabs">
+    <button class="tab active" data-tab="tryon">Customer & looks</button>
+    <button class="tab" data-tab="catalog">Clothing catalogue</button>
+    <button class="tab" data-tab="add">Add product</button>
+  </nav>
+
+  <section id="tryon">
+    <div class="card">
+      <h2>1. Customer photo</h2>
+      <p class="sub">Ask the customer for permission before taking or selecting a photo.</p>
+      <div class="photoBox">
+        <label for="customerPhoto" style="margin-top:0">Take a photo or choose from gallery</label>
+        <input id="customerPhoto" type="file" accept="image/*" capture="environment">
+        <img id="customerPreview" class="hidden" alt="Customer photo preview">
+      </div>
+      <div class="notice" style="margin-top:12px">Privacy tip: this prototype keeps product details in this browser on this phone. The selected customer photo is only previewed in this session and is not uploaded by this prototype.</div>
+    </div>
+    <div class="card">
+      <h2>2. Choose shop clothes</h2>
+      <p class="sub">Tap a product to add it to the outfit list.</p>
+      <div id="tryProducts" class="grid"></div>
+      <div id="tryEmpty" class="empty hidden">No products yet. Add your shop's first shirt, jeans or sweater in the Add product tab.</div>
+    </div>
+    <div class="card">
+      <h2>3. Selected outfit</h2>
+      <div id="selectedList" class="empty">No clothes selected yet.</div>
+      <div class="actions">
+        <button class="secondary" id="clearSelection">Clear outfit</button>
+        <button class="primary" id="shareSummary">Share outfit details</button>
+      </div>
+      <div class="card" style="background:#f7fbf8;margin-top:14px;margin-bottom:0;border-style:dashed">
+        <h2>4. AI virtual try-on</h2>
+        <p class="sub">Next integration: generate a realistic preview of the customer wearing a selected shop garment.</p>
+        <button class="primary" id="aiTryOnBtn" type="button">Set up AI try-on</button>
+        <p class="sub" style="margin:10px 0 0">AI try-on is not active in this starter build. It needs a compatible AI service and a secure backend; a service may charge per image. The app will not upload customer photos until you connect and approve a service.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="catalog" class="hidden">
+    <div class="card">
+      <h2>Your men's collection</h2>
+      <p class="sub">Products are saved locally in this browser on this device.</p>
+      <div id="catalogProducts" class="grid"></div>
+      <div id="catalogEmpty" class="empty hidden">Your catalogue is empty. Add products to get started.</div>
+    </div>
+    <div class="actions"><button class="secondary" id="exportData">Export catalogue backup</button><button class="secondary" id="importBtn">Import backup</button><input id="importFile" class="hidden" type="file" accept="application/json"></div>
+  </section>
+
+  <section id="add" class="hidden">
+    <div class="card">
+      <h2>Add multiple clothes together</h2>
+      <p class="sub">Choose several garment photos, set one shared size, then review each item's name and price before saving all at once.</p>
+      <form id="productForm">
+        <label for="ptype">Category for this batch *</label>
+        <select id="ptype"><option>Shirt</option><option>T-shirt</option><option>Jeans</option><option>Trousers</option><option>Sweater</option><option>Jacket</option><option>Kurta</option><option>Other</option></select>
+        <div class="row">
+          <div><label for="psizes">Shared size *</label><input id="psizes" required placeholder="e.g. M, 32, XL"></div>
+          <div><label for="pdefaultprice">Default price (₹)</label><input id="pdefaultprice" type="number" min="0" step="1" placeholder="e.g. 699"></div>
+        </div>
+        <label for="pimages">Select multiple garment photos *</label>
+        <input id="pimages" type="file" accept="image/*" multiple required>
+        <p class="sub" style="margin-top:6px">Tip: you can select several photos from your phone gallery. Each photo becomes a separate product. All products in this batch get the same size; you can edit names and prices individually below.</p>
+        <div id="batchItems" class="hidden" style="margin-top:14px"></div>
+        <div class="actions"><button class="primary" type="submit">Save all products</button><button class="secondary" type="reset" id="resetForm">Clear batch</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+<div class="foot">ShopStyle Android web app • Keep backups of your catalogue • Ask permission before using customer photos</div>
+<script>
+const KEY='shopstyle_mens_products_v1';
+let products=JSON.parse(localStorage.getItem(KEY)||'[]');
+let selected=[];
+let pendingImage='';
+let customerObjectUrl='';
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(products));}catch(e){alert('Storage is full. Try smaller product photos or export your catalogue backup and remove some items.');}}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
+function productCard(p,mode){return `<article class="product"><img src="${p.image}" alt="${escapeHtml(p.name)}"><div class="pbody"><h3>${escapeHtml(p.name)}</h3><div class="price">${money(p.price)}</div><div class="meta">${escapeHtml(p.category)}${p.sizes?' · '+escapeHtml(p.sizes):''}</div>${mode==='select'?`<button class="secondary" onclick="selectProduct('${p.id}')">+ Add to outfit</button>`:`<button class="danger" onclick="deleteProduct('${p.id}')">Remove product</button>`}</div></article>`}
+function render(){
+ $('tryProducts').innerHTML=products.map(p=>productCard(p,'select')).join('');
+ $('catalogProducts').innerHTML=products.map(p=>productCard(p,'delete')).join('');
+ $('tryEmpty').classList.toggle('hidden',products.length>0);
+ $('catalogEmpty').classList.toggle('hidden',products.length>0);
+ renderSelected();
+}
+function selectProduct(id){const p=products.find(x=>x.id===id);if(p){selected.push(p);renderSelected();}}
+function removeSelected(i){selected.splice(i,1);renderSelected();}
+function renderSelected(){
+ const el=$('selectedList');
+ if(!selected.length){el.className='empty';el.textContent='No clothes selected yet.';return;}
+ const total=selected.reduce((a,p)=>a+Number(p.price||0),0);
+ el.className='';
+ el.innerHTML=selected.map((p,i)=>`<div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:8px 0"><img src="${p.image}" style="width:54px;height:60px;object-fit:cover;border-radius:8px"><div style="flex:1"><b>${escapeHtml(p.name)}</b><div class="meta">${escapeHtml(p.colour||p.category)}</div><b>${money(p.price)}</b></div><button class="danger" onclick="removeSelected(${i})">×</button></div>`).join('')+`<p style="text-align:right;font-weight:800">Total: ${money(total)}</p>`;
+}
+function deleteProduct(id){if(confirm('Remove this product from your catalogue?')){products=products.filter(p=>p.id!==id);selected=selected.filter(p=>p.id!==id);save();render();}}
+window.selectProduct=selectProduct;window.removeSelected=removeSelected;window.deleteProduct=deleteProduct;
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['tryon','catalog','add'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));}));
+$('customerPhoto').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(customerObjectUrl)URL.revokeObjectURL(customerObjectUrl);customerObjectUrl=URL.createObjectURL(f);$('customerPreview').src=customerObjectUrl;$('customerPreview').classList.remove('hidden');});
+let batchFiles=[];
+$('pimages').addEventListener('change',e=>{
+  batchFiles=Array.from(e.target.files||[]);
+  renderBatchItems();
+});
+$('pdefaultprice').addEventListener('input',()=>{
+  document.querySelectorAll('.batch-price').forEach(el=>{if(!el.dataset.edited)el.value=$('pdefaultprice').value;});
+});
+function renderBatchItems(){
+ const box=$('batchItems');
+ if(!batchFiles.length){box.classList.add('hidden');box.innerHTML='';return;}
+ box.classList.remove('hidden');
+ box.innerHTML='<h3 style="font-size:15px;margin:0 0 10px">Review each item ('+batchFiles.length+')</h3>'+batchFiles.map((f,i)=>{
+   const url=URL.createObjectURL(f);
+   const guessed=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+   return `<div style="display:grid;grid-template-columns:68px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+     <img src="${url}" alt="" style="width:68px;height:78px;object-fit:cover;border-radius:8px">
+     <div><label style="margin-top:0" for="batch-name-${i}">Product name</label><input id="batch-name-${i}" class="batch-name" value="${escapeHtml(guessed)}" required>
+     <label for="batch-price-${i}">Price (₹)</label><input id="batch-price-${i}" class="batch-price" data-edited="0" type="number" min="0" step="1" value="${escapeHtml($('pdefaultprice').value)}" required></div>
+   </div>`;
+ }).join('');
+ document.querySelectorAll('.batch-price').forEach(el=>el.addEventListener('input',()=>el.dataset.edited='1'));
+}
+$('productForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!batchFiles.length){alert('Please select at least one garment photo.');return;}
+ const size=$('psizes').value.trim();
+ const category=$('ptype').value;
+ const names=Array.from(document.querySelectorAll('.batch-name'));
+ const prices=Array.from(document.querySelectorAll('.batch-price'));
+ if(names.length!==batchFiles.length){alert('Please select the photos again.');return;}
+ const readFile=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});
+ try{
+   const additions=[];
+   for(let i=0;i<batchFiles.length;i++){
+     additions.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,8)+i,name:names[i].value.trim()||category,category,price:Number(prices[i].value||0),sizes:size,image:await readFile(batchFiles[i])});
+   }
+   products=[...additions,...products];save();render();
+   e.target.reset();batchFiles=[];$('batchItems').innerHTML='';$('batchItems').classList.add('hidden');
+   document.querySelector('[data-tab="catalog"]').click();
+   alert(additions.length+' products saved. Shared size: '+size+'.');
+ }catch(err){alert('Could not save all photos. Try fewer or smaller images at a time.');}
+});
+$('resetForm').addEventListener('click',()=>{batchFiles=[];setTimeout(()=>{renderBatchItems();},0);});
+$('clearSelection').addEventListener('click',()=>{selected=[];renderSelected();});
+$('aiTryOnBtn').addEventListener('click',()=>{if(!$('customerPhoto').files.length){alert('First take or select a customer photo.');return;}if(!selected.length){alert('First add at least one garment to the outfit.');return;}alert('AI try-on is not connected yet. The shop catalogue and outfit builder work now. To enable realistic garment try-on, a secure AI service/backend must be connected. Do not enter AI API keys into this page.');});
+$('shareSummary').addEventListener('click',async()=>{if(!selected.length){alert('Choose at least one product first.');return;}const total=selected.reduce((a,p)=>a+Number(p.price||0),0);const txt='ShopStyle outfit\\n'+selected.map(p=>`${p.name} — ${money(p.price)}`).join('\\n')+'\\nTotal: '+money(total);if(navigator.share){try{await navigator.share({title:'Selected shop outfit',text:txt});}catch(e){}}else{try{await navigator.clipboard.writeText(txt);alert('Outfit details copied. You can paste them into WhatsApp.');}catch(e){prompt('Copy outfit details:',txt);}}});
+$('exportData').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(products,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='shopstyle-catalogue-backup.json';a.click();URL.revokeObjectURL(a.href);});
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data))throw new Error();if(confirm('Replace current catalogue with '+data.length+' imported products?')){products=data;save();render();alert('Catalogue imported.');}}catch(err){alert('That file is not a valid ShopStyle backup.');}};r.readAsText(f);});
+render();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{})); }
+</script>
+</body>
+</html>
